@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My To-do App</title>
+    </head>
+    <body>
+        <h1>My To-Do App</h1>
+
+        <form  method="POST">
+            {% csrf_token %} 
+            <input type="text"
+            name="title"
+            placeholder="Enter a task" required>
+            <button type="Submit">Add Task</button>
+        </form>
+        <h3>My Tasks</h3>
+        
+        <ul>
+            {% for task in tasks %}
+            <li>
+                {% if task.completed %}
+                <del>{{task.title}}</del>
+                
+                {% else %}
+                {{task.title}}
+                <a href="{% url 'complete_task' task.id %}">Complete</a>
+                {% endif %}
+                |
+                <a href="{% url 'edit_task' task.id %}">Edit</a>
+                |
+                <a href="{% url 'delete_task' task.id %}">Delete</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
