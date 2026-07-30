@@ -22,7 +22,7 @@ def delete_task(request, id):
 
 def complete_task(request, id):
     task=get_object_or_404(Task,id=id)
-    task.completed=True
+    task.completed= not task.completed
     task.save()
     return redirect('home')
 
