@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>My To-do App</title>
+        <title>DayQuest</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body class="bg-light">
         <div class="container mt-5">
-        <h1 class="text-center mb-4">My To-Do App</h1>
+        <h1 class="text-center mb-4">DayQuest</h1>
 
-        <h3>My Tasks</h3>
+        <h2 class="mb-3">Today's Task</h2>
 
         <form  method="POST" class="d-flex gap-2 mb-4">
             {% csrf_token %} 
@@ -16,22 +16,48 @@
             name="title"
             class="form-control"
             placeholder="Enter a task" required>
+
+            <input type="date"
+            name="due_date"
+            class="form-control">
             <button class="btn btn-primary">Add Task</button>
         </form>
         
         {% for task in tasks %}
-        <div class="card mb-3">
+        <div class="card mb-3 
+        {% if task.completed %}
+        bg-light
+        {% elif task.is_overdue %}
+        bg-danger-subtle
+        {% elif task.is_today %}
+        bg-warning-subtle
+        {% else %}
+        bg-success-subtle
+        {% endif %}">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
                     {% if task.completed %}
                     <span class="text-decoration-line-through text-muted">{{ task.title }}</span>
                     {% else %}
-                    {{ task.title }}
+                    <strong> {{ task.title }} </strong>
                     {% endif %}
+                    
+                    {% if task.due_date %}
+                    <br>
+                    {% if task.is_overdue  %}
+                    <small class="text-danger">Overdue: {{ task.due_date|date:"F d, Y" }}</small>
+                    {% elif task.is_today %}
+                    <small class="text-warning">Due Today: {{ task.due_date|date:"F d, Y" }}</small>
+                    {% else %}
+                    <small class="text-success">Due: {{ task.due_date|date:"F d, Y" }}</small>
+                    {% endif %}
+                    {% endif %}
+
                 </div>
+
                 <div>
                     {% if not task.completed %}
-                    <a href="{% url 'complete_task' task.id %}" class="btn btn-success btn-sm">Complete</a>
+                    <a href="{% url 'complete_task' task.id %}" class="btn btn-success btn-sm">Completed</a>
                     {% else %}
                     <a href="{% url 'complete_task' task.id %}" class="btn btn-success btn-sm">Incomplete</a>
 

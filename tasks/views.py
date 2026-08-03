@@ -1,16 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
+from datetime import date
 
 def home(request):
     if request.method=="POST":
         title=request.POST.get("title")
-        Task.objects.create(title=title)
+        due_date=request.POST.get("due_date")
+        Task.objects.create(title=title, due_date=due_date)
         return redirect("home")
     
     tasks=Task.objects.all()
+    today=date.today()
+    for task in tasks:
+        if task.due_date:
+            task.is_overdue= task.due_date < today
+            task.is_today= task.due_date == today
+        else:
+            task.is_overdue= False
+            task.is_today= False
 
     context={
-        "tasks":tasks
+        "tasks":tasks,
+        "today": date.today(),
     }
 
     return render(request, "tasks/home.html", context)
