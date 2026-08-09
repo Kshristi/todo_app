@@ -8,6 +8,40 @@
         <div class="container mt-5">
         <h1 class="text-center mb-4">DayQuest</h1>
 
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-primary">
+                    <div class="card-body">
+                        <h5>Total</h5>
+                        <h2>{{ total_tasks }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-success">
+                    <div class="card-body">
+                        <h5>Completed</h5>
+                        <h2>{{ completed_tasks }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-warning">
+                    <div class="card-body">
+                        <h5>Pending</h5>
+                        <h2>{{ pending_tasks }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-danger">
+                    <div class="card-body">
+                        <h5>Overdue</h5>
+                        <h2>{{ overdue_tasks }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h2 class="mb-3">Today's Task</h2>
 
         <form  method="POST" class="d-flex gap-2 mb-4">
