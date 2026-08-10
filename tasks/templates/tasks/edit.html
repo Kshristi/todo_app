@@ -18,6 +18,15 @@
             <input type="date"
             name="due_date"
             value="{{ task.due_date }}">
+            <input type="radio" name="priority" value="Low" 
+            {% if task.priority == "Low" %}
+            checked{% endif %}>Low
+            <input type="radio" name="priority" value="Medium" 
+            {% if task.priority == "Medium" %}
+            checked{% endif %}>Medium
+            <input type="radio" name="priority" value="High" 
+            {% if task.priority == "High" %}
+            checked{% endif %}>High
             <button type="Submit">Save Changes</button>
         </form>
         </div>

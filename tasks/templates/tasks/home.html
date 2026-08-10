@@ -54,9 +54,26 @@
             <input type="date"
             name="due_date"
             class="form-control">
+            <div class="mt-2">
+                <label class="form-label">Priority</label>
+                <div>
+                    <input type="radio" name="priority" value="Low" id="low">
+                    <label for="low">Low</label><br>
+                    <input type="radio" name="priority" value="Medium" id="medium" checked>
+                    <label for="medium">Medium</label><br>
+                    <input type="radio" name="priority" value="High" id="high">
+                    <label for="high">High</label>
+                </div>
+            </div>
             <button class="btn btn-primary">Add Task</button>
         </form>
         
+        <form  method="GET" class="d-flex gap-2 mb-4">
+            {% csrf_token %} 
+            <input type="text" name="search" class="form-control" placeholder="search..." value="{{ search_query }}">
+            <button class="btn btn-primary">Search</button>
+        </form>
+
         {% for task in tasks %}
         <div class="card mb-3 
         {% if task.completed %}
@@ -86,7 +103,16 @@
                     <small class="text-success">Due: {{ task.due_date|date:"F d, Y" }}</small>
                     {% endif %}
                     {% endif %}
-
+                    <br>
+                    <small>
+                        {% if task.priority == "High" %}
+                        High Priority
+                        {% elif task.priority == "Medium" %}
+                        Medium Priority
+                        {% else %}
+                        Low Priority
+                        {% endif %}
+                    </small>
                 </div>
 
                 <div>
