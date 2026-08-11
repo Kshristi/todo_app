@@ -9,20 +9,24 @@ def home(request):
         priority=request.POST.get("priority")
         Task.objects.create(title=title, due_date=due_date,priority=priority)
         return redirect("home")
-    
-        
-    tasks=Task.objects.all()
+
+    today=date.today()
     search_query=request.GET.get("search")
+    filter_type=request.GET.get("filter","all")  
+    tasks=Task.objects.all()
     if search_query:
-        tasks=Task.objects.filter(title__icontains=search_query)
-    else:
-        tasks=Task.objects.all()
-        
+        tasks=tasks.filter(title__icontains=search_query)
+    if filter_type=="pending":
+        tasks=tasks.filter(completed=False)
+    elif filter_type=="completed":
+        tasks=tasks.filter(completed=True)
+    elif filter_type=="overdue":
+        tasks=tasks.filter(due_date__lt=today, completed=False)
+
     total_tasks=tasks.count()
     completed_tasks=tasks.filter(completed=True).count()
     pending_tasks=tasks.filter(completed=False).count()
-
-    today=date.today()
+            
     for task in tasks:
         if task.due_date:
             task.is_overdue= task.due_date < today
@@ -39,7 +43,8 @@ def home(request):
         "completed_tasks": completed_tasks,
         "pending_tasks": pending_tasks,
         "overdue_tasks": overdue_tasks,
-        "search_query": search_query
+        "search_query": search_query,
+        "filter_type": filter_type
     }
 
     return render(request, "tasks/home.html", context)

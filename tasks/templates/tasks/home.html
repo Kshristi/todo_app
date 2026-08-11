@@ -73,7 +73,12 @@
             <input type="text" name="search" class="form-control" placeholder="search..." value="{{ search_query }}">
             <button class="btn btn-primary">Search</button>
         </form>
-
+        <div class="mb-4">
+            <a href="?search={{ search_query }}&filter=all" class="btn btn-outline-primary">ALL</a>
+            <a href="?search={{ search_query }}&filter=pending" class="btn btn-outline-warning">Pending</a>
+            <a href="?search={{ search_query }}&filter=completed" class="btn btn-outline-success">Completed</a>
+            <a href="?search={{ search_query }}&filter=overdue" class="btn btn-outline-danger">Overdue</a>
+        </div>
         {% for task in tasks %}
         <div class="card mb-3 
         {% if task.completed %}
