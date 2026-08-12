@@ -7,12 +7,14 @@ def home(request):
         title=request.POST.get("title")
         due_date=request.POST.get("due_date")
         priority=request.POST.get("priority")
-        Task.objects.create(title=title, due_date=due_date,priority=priority)
+        category=request.POST.get("category")
+        Task.objects.create(title=title, due_date=due_date,priority=priority,category=category)
         return redirect("home")
 
     today=date.today()
     search_query=request.GET.get("search")
     filter_type=request.GET.get("filter","all")  
+    category=request.GET.get("category","all")
     tasks=Task.objects.all()
     if search_query:
         tasks=tasks.filter(title__icontains=search_query)
@@ -22,6 +24,9 @@ def home(request):
         tasks=tasks.filter(completed=True)
     elif filter_type=="overdue":
         tasks=tasks.filter(due_date__lt=today, completed=False)
+
+    if category!= "all":
+        tasks=tasks.filter(category=category)
 
     total_tasks=tasks.count()
     completed_tasks=tasks.filter(completed=True).count()
@@ -44,7 +49,8 @@ def home(request):
         "pending_tasks": pending_tasks,
         "overdue_tasks": overdue_tasks,
         "search_query": search_query,
-        "filter_type": filter_type
+        "filter_type": filter_type,
+        "category": category,
     }
 
     return render(request, "tasks/home.html", context)
@@ -67,6 +73,7 @@ def edit_task(request, id):
         task.title=request.POST.get("title")
         task.due_date=request.POST.get("due_date")
         task.priority=request.POST.get("priority")
+        task.category=request.POST.get("category")
         task.save()
         return redirect('home')
     return render(request,"tasks/edit.html",{"task":task})

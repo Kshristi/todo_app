@@ -65,6 +65,16 @@
                     <label for="high">High</label>
                 </div>
             </div>
+            <div>
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="Study">Study</option>
+                    <option value="Work">Work</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Project">Project</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
             <button class="btn btn-primary">Add Task</button>
         </form>
         
@@ -73,11 +83,21 @@
             <input type="text" name="search" class="form-control" placeholder="search..." value="{{ search_query }}">
             <button class="btn btn-primary">Search</button>
         </form>
+        <h5 class="mt-4">Status</h5>
         <div class="mb-4">
-            <a href="?search={{ search_query }}&filter=all" class="btn btn-outline-primary">ALL</a>
-            <a href="?search={{ search_query }}&filter=pending" class="btn btn-outline-warning">Pending</a>
-            <a href="?search={{ search_query }}&filter=completed" class="btn btn-outline-success">Completed</a>
-            <a href="?search={{ search_query }}&filter=overdue" class="btn btn-outline-danger">Overdue</a>
+            <a href="?search={{ search_query }}&filter=all" class="btn {% if filter_type == 'all' %}btn-primary fw-bold {% else %} btn-outline-primary btn-sm {% endif %}">ALL</a>
+            <a href="?search={{ search_query }}&filter=pending" class="btn {% if filter_type == 'pending' %}btn-warning fw-bold {% else %} btn-outline-warning btn-sm {% endif %}">Pending</a>
+            <a href="?search={{ search_query }}&filter=completed" class="btn {% if filter_type == 'completed' %}btn-success fw-bold {% else %} btn-outline-success btn-sm {% endif %}">Completed</a>
+            <a href="?search={{ search_query }}&filter=overdue" class="btn {% if filter_type == 'overdue' %}btn-danger fw-bold {% else %} btn-outline-danger btn-sm {% endif %}">Overdue</a>
+        </div>
+        <h5 class="mt-4">Category</h5>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a href="?search={{ search_query }}&filter={{ filter_type}}&category=all" class="btn {% if category == 'all' %}btn-dark fw-bold {% else %} btn-outline-dark btn-sm {% endif %}">All</a>
+            <a href="?search={{ search_query }}&filter={{ filter_type}}&category=Study" class="btn {% if category == 'Study' %}btn-primary fw-bold {% else %} btn-outline-primary btn-sm {% endif %}">Study</a>
+            <a href="?search={{ search_query }}&filter={{ filter_type}}&category=Work" class="btn {% if category == 'Work' %}btn-success fw-bold {% else %} btn-outline-success btn-sm {% endif %}">Work</a>
+            <a href="?search={{ search_query }}&filter={{ filter_type}}&category=Personal" class="btn {% if category == 'Personal' %}btn-warning fw-bold {% else %} btn-outline-warning btn-sm {% endif %}">Personal</a>
+            <a href="?search={{ search_query }}&filter={{ filter_type}}&category=Projects" class="btn {% if category == 'Projects' %}btn-danger fw-bold {% else %} btn-outline-danger btn-sm {% endif %}">Projects</a>
+            <a href="?search={{ search_query }}&filter={{ filter_type}}&category=Other" class="btn {% if category == 'Other' %}btn-secondary fw-bold {% else %} btn-outline-secondary btn-sm {% endif %}">Other</a>
         </div>
         {% for task in tasks %}
         <div class="card mb-3 
@@ -116,6 +136,20 @@
                         Medium Priority
                         {% else %}
                         Low Priority
+                        {% endif %}
+                    </small>
+                    <br>
+                    <small class="text-muted">
+                        {% if task.category == "Study" %}
+                        Category: Study
+                        {% elif task.category == "Work" %}
+                        Category: Work
+                        {% elif task.category == "Personal" %}
+                        Category: Personal
+                        {% elif task.category == "Projects" %}
+                        Category: Projects
+                        {%  else %}
+                        Category: Other
                         {% endif %}
                     </small>
                 </div>

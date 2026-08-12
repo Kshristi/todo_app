@@ -17,7 +17,7 @@
             
             <input type="date"
             name="due_date"
-            value="{{ task.due_date }}">
+            value="{{ task.due_date }}" default="{{ task.due_date}}">
             <input type="radio" name="priority" value="Low" 
             {% if task.priority == "Low" %}
             checked{% endif %}>Low
@@ -27,6 +27,16 @@
             <input type="radio" name="priority" value="High" 
             {% if task.priority == "High" %}
             checked{% endif %}>High
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="Study" {% if task.category == "Study" %} selected {% endif %}>Study</option>
+                    <option value="Work" {% if task.category == "Work" %} selected {% endif %}>Work</option>
+                    <option value="Personal" {% if task.category == "Personal" %} selected {% endif %}>Personal</option>
+                    <option value="Projects" {% if task.category == "Projects" %} selected {% endif %}>Projects</option>
+                    <option value="Other" {% if task.category == "Other" %} selected {% endif %}>Other</option>
+                </select>
+            </div>
             <button type="Submit">Save Changes</button>
         </form>
         </div>
