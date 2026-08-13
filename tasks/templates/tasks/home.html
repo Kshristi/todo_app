@@ -2,6 +2,20 @@
 <html>
     <head>
         <title>DayQuest</title>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>DailyQuest</h1>
+            <div>
+                <span class="me-3">
+                    Welcome, <strong>{{ request.user.username }}</strong>
+                </span>
+            </div>
+        </div>
+        <div class="text-end mb-3">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-danger">Logout</button>
+            </form>
+        </div>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body class="bg-light">

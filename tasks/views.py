@@ -1,21 +1,23 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from datetime import date
 
+@login_required
 def home(request):
     if request.method=="POST":
         title=request.POST.get("title")
         due_date=request.POST.get("due_date")
         priority=request.POST.get("priority")
         category=request.POST.get("category")
-        Task.objects.create(title=title, due_date=due_date,priority=priority,category=category)
+        Task.objects.create(user=request.user, title=title, due_date=due_date,priority=priority,category=category)
         return redirect("home")
 
     today=date.today()
     search_query=request.GET.get("search")
     filter_type=request.GET.get("filter","all")  
     category=request.GET.get("category","all")
-    tasks=Task.objects.all()
+    tasks=Task.objects.filter(user=request.user)
     if search_query:
         tasks=tasks.filter(title__icontains=search_query)
     if filter_type=="pending":
@@ -56,18 +58,18 @@ def home(request):
     return render(request, "tasks/home.html", context)
 
 def delete_task(request, id):
-    task=get_object_or_404(Task,id=id)
+    task=get_object_or_404(Task,id=id, user= request.user)
     task.delete()
     return redirect('home')
 
 def complete_task(request, id):
-    task=get_object_or_404(Task,id=id)
+    task=get_object_or_404(Task,id=id, user=request.user)
     task.completed= not task.completed
     task.save()
     return redirect('home')
 
 def edit_task(request, id):
-    task=get_object_or_404(Task,id=id)
+    task=get_object_or_404(Task,id=id, user=request.user)
 
     if request.method=="POST":
         task.title=request.POST.get("title")
