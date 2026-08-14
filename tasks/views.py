@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
-from datetime import date
+from datetime import date, datetime
 
 @login_required
 def home(request):
@@ -14,10 +14,18 @@ def home(request):
         return redirect("home")
 
     today=date.today()
+    current_hour= datetime.now().hour
+    if current_hour < 12:
+        greeting= "Good Morning"
+    elif current_hour < 17:
+        greeting= "Good Afternoon"
+    else:
+        greeting= "Good Evening"
     search_query=request.GET.get("search")
     filter_type=request.GET.get("filter","all")  
+    sort_by=request.GET.get("sort","due_date") 
     category=request.GET.get("category","all")
-    tasks=Task.objects.filter(user=request.user)
+    tasks=Task.objects.filter(user=request.user).order_by("completed", "due_date")
     if search_query:
         tasks=tasks.filter(title__icontains=search_query)
     if filter_type=="pending":
@@ -32,8 +40,22 @@ def home(request):
 
     total_tasks=tasks.count()
     completed_tasks=tasks.filter(completed=True).count()
+    if total_tasks>0:
+        completion_percentage= int((completed_tasks / total_tasks)*100)
+    else:
+        completion_percentage=0
+
     pending_tasks=tasks.filter(completed=False).count()
-            
+
+    if sort_by=="due_date":
+        tasks=tasks.order_by("completed","due_date")
+    elif sort_by == "priority":
+        tasks=tasks.order_by("completed","priority")
+    elif sort_by == "newest":
+        tasks=tasks.order_by("-id")
+    elif sort_by == "alphabet":
+        tasks=tasks.order_by("title")
+
     for task in tasks:
         if task.due_date:
             task.is_overdue= task.due_date < today
@@ -53,6 +75,9 @@ def home(request):
         "search_query": search_query,
         "filter_type": filter_type,
         "category": category,
+        "completion_percentage": completion_percentage,
+        "sort_by": sort_by,
+        "greeting": greeting,
     }
 
     return render(request, "tasks/home.html", context)

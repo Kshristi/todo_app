@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 PRIORITY_CHOICES=[
-    ("Low","Low"),
-    ("Medium","Medium"),
-    ("High","High"),
+    (1, "High"),
+    (2, "Medium"),
+    (3, "Low"),
 ]
 
 CATEGORY_CHOICES=[
@@ -20,7 +20,7 @@ class Task(models.Model):
     title=models.CharField(max_length=200)
     completed=models.BooleanField(default=False)
     due_date=models.DateField(null=True, blank=True)
-    priority= models.CharField(max_length=10, choices=PRIORITY_CHOICES,default="Medium")
+    priority= models.IntegerField(choices=PRIORITY_CHOICES,default=2)
     category= models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="Other")
     def __str__(self):
         return self.title
