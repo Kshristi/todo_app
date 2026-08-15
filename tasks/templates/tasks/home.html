@@ -1,10 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>{{ greeting }},
-    {{ request.user.username }}!</h2>
-    <p class="text-muted">Let's make today productive!!!</p>
+<div class="mb-4">
+    <h2 class="fw-bold">
+        {{ greeting }},
+        {{ request.user.username }}
+    </h2>
+    <p class="text-muted">{{ motivation }}</p>
+</div>
+{% if show_confetti %}
+<div class="alert alert-success text-center shadow-sm">
+    <h4>Quests Completed</h4>
+    <p class="mb-0">
+        Congratulations!!! You completed all your tasks today.
+    </p>
+</div>
+{% endif %}
+<div class="card shadow-sm border-0 mt-4">
+    <div class="card-body">
+        <h4 class="mb-3">Productivity This Week</h4>
+        <canvas id="weeklyChart"></canvas>
+    </div>
+</div>
         <div class="container mt-5">
-        <h1 class="text-center mb-4">DayQuest</h1>
+        <h1 class="text-center mb-4">DailyQuest</h1>
 
         <div class="row mb-4">
             <div class="col-md-3">
@@ -40,6 +58,8 @@
                 </div>
             </div>
         </div>
+
+        
         
         <h5>Overall Progress</h5>
         <div class="progress mb-4" style="height: 25px;">
@@ -48,6 +68,33 @@
             </div>
         </div>
 
+        <div class="row mt-4">
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <h5>Completed Today</h5>
+                        <h2 class="text-success">{{ completed_today }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <h5>Completed This Week</h5>
+                        <h2 class="text-primary">{{ completed_this_week }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <h5>Completed This Month</h5>
+                        <h2 class="text-warning">{{ completed_this_month }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <h2 class="mb-3">Today's Task</h2>
 
         <form  method="POST" class="d-flex gap-2 mb-4">
@@ -181,4 +228,64 @@
         <p class="text-center text-muted">No tasks available.</p>
         {% endfor %}
     </div>
+    {% if show_confetti %}
+    <script>
+        confetti({
+            particleCount: 120,
+            angle: 60,
+            spread: 70,
+            origin: {x: 0 }
+        });
+        confetti({
+            particleCount: 120,
+            angle: 120,
+            spread: 70,
+            origin: {x: 1 }
+        });
+        setTimeout(() => {
+            confetti({
+                particleCount: 180,
+                spread: 150,
+                origin: {y: 0.6 }
+            });
+        }, 500);
+    </script>
+    {% endif %}
+    <script>
+        const labels=[
+            {% for label in chart_labels %}
+            "{{ label }}",
+            {% endfor %}
+        ];
+        const data=[
+            {% for value in chart_data %}
+            {{ value }},
+            {% endfor %}
+        ];
+        const ctx= document.getElementById("weeklyChart");
+        new Chart(ctx,{
+            type:"line",
+            data:{
+                labels: labels,
+                datasets: [{
+                    label: "Task Completed",
+                    data: data,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3
+                }]
+            },
+            options:{
+                responsive: true,
+                scales:{
+                    y:{
+                        beginAtZero: true,
+                        ticks:{
+                            precision:0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}
